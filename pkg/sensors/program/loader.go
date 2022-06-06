@@ -232,6 +232,17 @@ func LoadProgram(
 		}
 	}
 
+	// Populated config
+	for _, config := range load.Configs {
+		if m, ok := coll.Maps[config.MapName]; ok {
+			if err := m.Update(uint32(0), config.Data, ebpf.UpdateAny); err != nil {
+				return err
+			}
+		} else {
+			return fmt.Errorf("populating config failed as map '%s' was not found from collection", "config_map")
+		}
+	}
+
 	prog, ok := coll.Programs[progSpec.Name]
 	if !ok {
 		return fmt.Errorf("program for section '%s' not found", load.Label)

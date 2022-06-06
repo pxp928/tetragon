@@ -25,6 +25,7 @@ func Builder(
 		TraceFD:    -1,
 		LoaderData: struct{}{},
 		Selectors:  nil,
+		Configs:    nil,
 		unloader:   nil,
 		PinMap:     make(map[string]string),
 	}
@@ -78,6 +79,8 @@ type Program struct {
 
 	// Selectors for the program. When the program is loaded these are set.
 	Selectors []MapData
+
+	Configs []MapData
 
 	// unloader for the program. nil if not loaded.
 	unloader unloader.Unloader
