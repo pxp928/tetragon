@@ -221,6 +221,17 @@ func LoadProgram(
 		return fmt.Errorf("installing tail calls failed: %s", err)
 	}
 
+	// Populate selectors
+	for _, selector := range load.Selectors {
+		if m, ok := coll.Maps[selector.MapName]; ok {
+			if err := m.Update(uint32(0), selector.Data, ebpf.UpdateAny); err != nil {
+				return err
+			}
+		} else {
+			return fmt.Errorf("populating selectors failed as map '%s' was not found from collection", selector.MapName)
+		}
+	}
+
 	prog, ok := coll.Programs[progSpec.Name]
 	if !ok {
 		return fmt.Errorf("program for section '%s' not found", load.Label)
