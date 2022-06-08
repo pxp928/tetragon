@@ -10,13 +10,19 @@ import (
 // Map represents BPF maps.
 type Map struct {
 	Name      string
+	PinName   string
 	Prog      *Program
 	PinState  State
 	mapHandle *ebpf.Map
 }
 
 func MapBuilder(name string, ld *Program) *Map {
-	return &Map{name, ld, Idle(), nil}
+	return &Map{name, name, ld, Idle(), nil}
+}
+
+func MapBuilderPin(name, pin string, ld *Program) *Map {
+	ld.PinMap[name] = pin
+	return &Map{name, pin, ld, Idle(), nil}
 }
 
 func (m *Map) Unload() error {
