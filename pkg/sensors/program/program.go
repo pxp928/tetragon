@@ -76,7 +76,8 @@ type Program struct {
 	Configs []MapData
 
 	// unloader for the program. nil if not loaded.
-	unloader unloader.Unloader
+	unloader         unloader.Unloader
+	unloaderOverride unloader.Unloader
 
 	PinMap map[string]string
 }
@@ -98,6 +99,12 @@ func (p *Program) Unload() error {
 	if err := p.unloader.Unload(); err != nil {
 		return fmt.Errorf("Failed to unload: %s", err)
 	}
+	if p.unloaderOverride != nil {
+		if err := p.unloaderOverride.Unload(); err != nil {
+			return fmt.Errorf("Failed to unload override: %s", err)
+		}
+	}
 	p.unloader = nil
+	p.unloaderOverride = nil
 	return nil
 }
