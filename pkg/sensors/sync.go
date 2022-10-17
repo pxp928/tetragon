@@ -186,15 +186,21 @@ func StartSensorManager(bpfDir, mapDir, ciliumDir string) (*Manager, error) {
 					break
 				}
 				for _, s := range sensors {
-					if s.Ops == nil {
-						err = fmt.Errorf("sensor %s does not support configuration", op.name)
-						break
+					var config string
+					for _, p := range s.Progs {
+						config = fmt.Sprintf("Name: %s, Attach: %s, Label: %s, PinPath: %s, RetProbe: %v, ErrorFatal: %v, Override: %v, Type: %s",
+							p.Name, p.Attach, p.Label, p.PinPath, p.RetProbe, p.ErrorFatal, p.Override, p.Type)
 					}
-					op.val, err = s.Ops.GetConfig(op.key)
-					if err != nil {
-						err = fmt.Errorf("sensor %s GetConfig failed: %s", op.name, err)
-						break
-					}
+					op.val = config
+					// if s.Ops == nil {
+					// 	err = fmt.Errorf("sensor %s does not support configuration", op.name)
+					// 	break
+					// }
+					// op.val, err = s.Ops.GetConfig(op.key)
+					// if err != nil {
+					// 	err = fmt.Errorf("sensor %s GetConfig failed: %s", op.name, err)
+					// 	break
+					// }
 				}
 
 			case *sensorCtlStop:
