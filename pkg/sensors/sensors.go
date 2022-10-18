@@ -185,3 +185,12 @@ func GetMergedSensorFromParserPolicy(name string, policy interface{}) (*Sensor, 
 	}
 	return SensorCombine(name, sensors...), nil
 }
+
+func GetSensorStatus(selected *Sensor) (string, error) {
+	var config []string
+	for _, p := range selected.Progs {
+		config = append(config, fmt.Sprintf("Name: %s, Attach: %s, Label: %s, PinPath: %s, RetProbe: %v, ErrorFatal: %v, Override: %v, Type: %s, LoaderDate: %+v",
+			p.Name, p.Attach, p.Label, p.PinPath, p.RetProbe, p.ErrorFatal, p.Override, p.Type, p.LoaderData))
+	}
+	return strings.Join(config, ";"), nil
+}

@@ -74,6 +74,8 @@
     - [GetVersionResponse](#tetragon-GetVersionResponse)
     - [ListSensorsRequest](#tetragon-ListSensorsRequest)
     - [ListSensorsResponse](#tetragon-ListSensorsResponse)
+    - [PrintSensorStateRequest](#tetragon-PrintSensorStateRequest)
+    - [PrintSensorStateResponse](#tetragon-PrintSensorStateResponse)
     - [RemoveSensorRequest](#tetragon-RemoveSensorRequest)
     - [RemoveSensorResponse](#tetragon-RemoveSensorResponse)
     - [SensorStatus](#tetragon-SensorStatus)
@@ -1207,6 +1209,36 @@ Determins the behaviour of a field filter
 
 
 
+<a name="tetragon-PrintSensorStateRequest"></a>
+
+### PrintSensorStateRequest
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| name | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="tetragon-PrintSensorStateResponse"></a>
+
+### PrintSensorStateResponse
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| state | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="tetragon-RemoveSensorRequest"></a>
 
 ### RemoveSensorRequest
@@ -1297,6 +1329,7 @@ Determins the behaviour of a field filter
 | DisableSensor | [DisableSensorRequest](#tetragon-DisableSensorRequest) | [DisableSensorResponse](#tetragon-DisableSensorResponse) |  |
 | SetSensorConfig | [SetSensorConfigRequest](#tetragon-SetSensorConfigRequest) | [SetSensorConfigResponse](#tetragon-SetSensorConfigResponse) |  |
 | GetSensorConfig | [GetSensorConfigRequest](#tetragon-GetSensorConfigRequest) | [GetSensorConfigResponse](#tetragon-GetSensorConfigResponse) |  |
+| PrintSensorState | [PrintSensorStateRequest](#tetragon-PrintSensorStateRequest) | [PrintSensorStateResponse](#tetragon-PrintSensorStateResponse) |  |
 | GetStackTraceTree | [GetStackTraceTreeRequest](#tetragon-GetStackTraceTreeRequest) | [GetStackTraceTreeResponse](#tetragon-GetStackTraceTreeResponse) |  |
 | GetVersion | [GetVersionRequest](#tetragon-GetVersionRequest) | [GetVersionResponse](#tetragon-GetVersionResponse) |  |
 

@@ -186,22 +186,25 @@ func StartSensorManager(bpfDir, mapDir, ciliumDir string) (*Manager, error) {
 					break
 				}
 				for _, s := range sensors {
-					var config []string
-					for _, p := range s.Progs {
-						config = append(config, fmt.Sprintf("Name: %s, Attach: %s, Label: %s, PinPath: %s, RetProbe: %v, ErrorFatal: %v, Override: %v, Type: %s, LoaderDate: %+v",
-							p.Name, p.Attach, p.Label, p.PinPath, p.RetProbe, p.ErrorFatal, p.Override, p.Type, p.LoaderData))
+					if s.Ops == nil {
+						err = fmt.Errorf("sensor %s does not support configuration", op.name)
+						break
 					}
-					op.val = strings.Join(config, ";")
-					err = nil
-					// if s.Ops == nil {
-					// 	err = fmt.Errorf("sensor %s does not support configuration", op.name)
-					// 	break
-					// }
-					// op.val, err = s.Ops.GetConfig(op.key)
-					// if err != nil {
-					// 	err = fmt.Errorf("sensor %s GetConfig failed: %s", op.name, err)
-					// 	break
-					// }
+					op.val, err = s.Ops.GetConfig(op.key)
+					if err != nil {
+						err = fmt.Errorf("sensor %s GetConfig failed: %s", op.name, err)
+						break
+					}
+				}
+
+			case *sensorPrintState:
+				sensors, exists := availableSensors[op.name]
+				if !exists {
+					err = fmt.Errorf("sensor %s does not exist", op.name)
+					break
+				}
+				for _, s := range sensors {
+					op.config, err = GetSensorStatus(s)
 				}
 
 			case *sensorCtlStop:
@@ -344,6 +347,23 @@ func (h *Manager) GetSensorConfig(ctx context.Context, name string, cfgkey strin
 	err := <-retc
 	if err == nil {
 		return op.val, nil
+	}
+
+	return "", err
+}
+
+func (h *Manager) PrintSensorState(ctx context.Context, name string) (string, error) {
+	retc := make(chan error)
+	op := &sensorPrintState{
+		ctx:     ctx,
+		name:    name,
+		retChan: retc,
+	}
+
+	h.sensorCtl <- op
+	err := <-retc
+	if err == nil {
+		return op.config, nil
 	}
 
 	return "", err
@@ -511,6 +531,14 @@ type sensorConfigGet struct {
 	retChan chan error
 }
 
+// get the configuration of the sensor to print
+type sensorPrintState struct {
+	ctx     context.Context
+	name    string
+	config  string
+	retChan chan error
+}
+
 // sensorCtlStop stops the controller
 type sensorCtlStop struct {
 	ctx     context.Context
@@ -532,6 +560,7 @@ func (s *sensorDisable) sensorOpDone(e error)    { s.retChan <- e }
 func (s *sensorList) sensorOpDone(e error)       { s.retChan <- e }
 func (s *sensorConfigSet) sensorOpDone(e error)  { s.retChan <- e }
 func (s *sensorConfigGet) sensorOpDone(e error)  { s.retChan <- e }
+func (s *sensorPrintState) sensorOpDone(e error) { s.retChan <- e }
 func (s *sensorCtlStop) sensorOpDone(e error)    { s.retChan <- e }
 
 type sensorCtlHandle = chan<- sensorOp

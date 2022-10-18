@@ -88,6 +88,19 @@ func New() *cobra.Command {
 	}
 	sensorsCmd.AddCommand(sensorConfigCmd)
 
+	sensorPrintCmd := &cobra.Command{
+		Use:   "print <sensor>",
+		Short: "Configure sensor",
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			sensor := args[0]
+			common.CliRun(func(ctx context.Context, cli tetragon.FineGuidanceSensorsClient) {
+				sensorPrintState(ctx, cli, sensor)
+			})
+		},
+	}
+	sensorsCmd.AddCommand(sensorPrintCmd)
+
 	sensorRmCmd := &cobra.Command{
 		Use:   "rm <sensor_name>",
 		Short: "remove a sensor",
@@ -158,6 +171,16 @@ func sensorGetConfig(ctx context.Context, client tetragon.FineGuidanceSensorsCli
 		fmt.Printf("%s\n", res.Cfgval)
 	} else {
 		fmt.Printf("error getting %s config value for %s: %s\n", cfgkey, sensor, err)
+	}
+}
+
+func sensorPrintState(ctx context.Context, client tetragon.FineGuidanceSensorsClient, sensor string) {
+	req := tetragon.PrintSensorStateRequest{Name: sensor}
+	res, err := client.PrintSensorState(ctx, &req)
+	if err == nil {
+		fmt.Printf("%s\n", res.State)
+	} else {
+		fmt.Printf("error getting config for %s: %s\n", sensor, err)
 	}
 }
 

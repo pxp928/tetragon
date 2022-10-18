@@ -39,6 +39,7 @@ type observer interface {
 	ListSensors(ctx context.Context) (*[]sensors.SensorStatus, error)
 	GetSensorConfig(ctx context.Context, name string, cfgkey string) (string, error)
 	SetSensorConfig(ctx context.Context, name string, cfgkey string, cfgval string) error
+	PrintSensorState(ctx context.Context, name string) (string, error)
 	RemoveSensor(ctx context.Context, sensorName string) error
 }
 
@@ -248,6 +249,16 @@ func (s *Server) GetSensorConfig(ctx context.Context, req *tetragon.GetSensorCon
 	}
 
 	return &tetragon.GetSensorConfigResponse{Cfgval: cfgval}, nil
+}
+
+func (s *Server) PrintSensorState(ctx context.Context, req *tetragon.PrintSensorStateRequest) (*tetragon.PrintSensorStateResponse, error) {
+	logger.GetLogger().WithField("request", req).Debug("Received a PrintSensorStatus request")
+	state, err := s.observer.PrintSensorState(ctx, req.GetName())
+	if err != nil {
+		return nil, err
+	}
+
+	return &tetragon.PrintSensorStateResponse{State: state}, nil
 }
 
 func (s *Server) SetSensorConfig(ctx context.Context, req *tetragon.SetSensorConfigRequest) (*tetragon.SetSensorConfigResponse, error) {

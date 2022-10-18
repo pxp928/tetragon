@@ -90,6 +90,10 @@ func (o DummyObserver) SetSensorConfig(ctx context.Context, name string, cfgkey 
 	return nil
 }
 
+func (o DummyObserver) PrintSensorState(ctx context.Context, name string) (string, error) {
+	return "<dummy>", nil
+}
+
 func (o DummyObserver) RemoveSensor(ctx context.Context, sensorName string) error {
 	return nil
 }

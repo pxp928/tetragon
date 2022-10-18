@@ -100,6 +100,10 @@ func (f *fakeObserver) SetSensorConfig(ctx context.Context, name string, cfgkey 
 	return nil
 }
 
+func (f *fakeObserver) PrintSensorState(ctx context.Context, name string) (string, error) {
+	return "<dummy>", nil
+}
+
 func (f *fakeObserver) GetTreeProto(ctx context.Context, tname string) (*tetragon.StackTraceNode, error) {
 	return nil, nil
 }
