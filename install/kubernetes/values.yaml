@@ -48,8 +48,8 @@ tetragon:
   enabled: true
   image:
     override: ~
-    repository: quay.io/cilium/tetragon
-    tag: v0.8.2
+    repository: ppatel1989/tetragon
+    tag: latest
   resources: {}
   extraArgs: {}
   extraEnv: []
@@ -119,7 +119,7 @@ tetragon:
     # -- Whether to enable exposing Tetragon gRPC.
     enabled: true
     # -- The address at which to expose gRPC. Set it to "" to listen on all available interfaces.
-    address: "localhost"
+    address: ""
     # -- The port at which to expose gRPC.
     port: 54321
   gops:
@@ -133,8 +133,8 @@ tetragonOperator:
   # -- tetragon-operator image.
   image:
     override: ~
-    repository: quay.io/cilium/tetragon-operator
-    tag: v0.8.2
+    repository: ppatel1989/tetragon-operator
+    tag: latest
     # tetragon-operator image-digest
     suffix: ""
 export:

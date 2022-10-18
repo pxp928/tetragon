@@ -186,12 +186,13 @@ func StartSensorManager(bpfDir, mapDir, ciliumDir string) (*Manager, error) {
 					break
 				}
 				for _, s := range sensors {
-					var config string
+					var config []string
 					for _, p := range s.Progs {
-						config = fmt.Sprintf("Name: %s, Attach: %s, Label: %s, PinPath: %s, RetProbe: %v, ErrorFatal: %v, Override: %v, Type: %s",
-							p.Name, p.Attach, p.Label, p.PinPath, p.RetProbe, p.ErrorFatal, p.Override, p.Type)
+						config = append(config, fmt.Sprintf("Name: %s, Attach: %s, Label: %s, PinPath: %s, RetProbe: %v, ErrorFatal: %v, Override: %v, Type: %s, LoaderDate: %+v",
+							p.Name, p.Attach, p.Label, p.PinPath, p.RetProbe, p.ErrorFatal, p.Override, p.Type, p.LoaderData))
 					}
-					op.val = config
+					op.val = strings.Join(config, ";")
+					err = nil
 					// if s.Ops == nil {
 					// 	err = fmt.Errorf("sensor %s does not support configuration", op.name)
 					// 	break
